@@ -35,10 +35,11 @@ class LinkSection():
         assert len(self.pages) > 0
         entries = [x.compile(page_size) for x in self.pages]
         joined = '\n\n'.join(entries)
+        total_length = len(self.pages) * page_size
         return (
             "ENTRY(_start)\n\n"
             "MEMORY {\n"
-            "  RAM (rx) : ORIGIN = 0x400000, LENGTH = 16M\n"
+            "  RAM (rx) : ORIGIN = 0x400000, LENGTH = {total_length}\n"
             "}\n\n"
             f"SECTIONS {{\n"
             f"  . = ORIGIN(RAM);\n"
