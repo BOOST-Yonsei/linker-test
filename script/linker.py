@@ -13,8 +13,8 @@ class LinkPage():
         assert len(self.sections) > 0
         assert 0 <= self.size <= page_size
 
-        # return f"{self.sections[0]} = ALIGN({page_size})\n" + "\n".join(self.symbols[1:])
-        return "\n".join(map(lambda s: f"*({s})", self.sections))
+        entries = [f"*({s})" for s in self.sections]
+        return f"    . = ALIGN({page_size});\n" + "    " + "\n    ".join(entries)
 
 
 class LinkSection():
@@ -34,10 +34,16 @@ class LinkSection():
     def compile(self, page_size):
         assert len(self.pages) > 0
         entries = [x.compile(page_size) for x in self.pages]
-        # return f"{self.name} ALIGN({page_size}): {{\n{"\n".join(entries)}\n}}"
-        return f"{self.name} : {{\n{'\n'.join(entries)}\n}}"
-
-'''
-TODO: Add support for page alignment
-The lines commented out were early attempts at alignment but they are not the correct linker syntax...
-'''
+        joined = '\n\n'.join(entries)
+        return (
+            "ENTRY(_start)\n\n"
+            "MEMORY {\n"
+            "  RAM (rx) : ORIGIN = 0x400000, LENGTH = 16M\n"
+            "}\n\n"
+            f"SECTIONS {{\n"
+            f"  . = ORIGIN(RAM);\n"
+            f"  {self.name} : ALIGN({page_size}) {{\n"
+            f"{joined}\n"
+            f"  }} > RAM\n"
+            f"}}"
+        )

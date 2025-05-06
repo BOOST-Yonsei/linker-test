@@ -19,7 +19,8 @@ linker/array.bfd.t: script/array.py build/array.o
 	./script/array.py
 
 build/array.opt: linker/array.bfd.t src/array.c
-	gcc $(OPTS) -ffunction-sections -Wl,--section-ordering-file $^ -o $@
+	gcc $(OPTS) -ffunction-sections -T linker/array.bfd.t src/array.c -o $@
+	# gcc $(OPTS) -ffunction-sections -Wl,--section-ordering-file $^ -o $@
 # < Binary relocation for array.c
 
 
