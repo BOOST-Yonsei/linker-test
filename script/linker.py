@@ -15,8 +15,6 @@ class LinkPage():
 
         entries = [f"*({s})" for s in self.sections]
         return f"    . = ALIGN({page_size});\n" + "    " + "\n    ".join(entries)
-
-
 class LinkSection():
     '''
     LinkSection {
@@ -35,16 +33,19 @@ class LinkSection():
         assert len(self.pages) > 0
         entries = [x.compile(page_size) for x in self.pages]
         joined = '\n\n'.join(entries)
-        total_length = len(self.pages) * page_size
+
+        text_size = len(self.pages) * page_size
+        buffer = 0x10000
+        total_length = text_size + buffer
         return (
             "ENTRY(_start)\n\n"
             "MEMORY {\n"
-            "  RAM (rx) : ORIGIN = 0x400000, LENGTH = {total_length}\n"
+            f"  RAM (rx) : ORIGIN = 0x400000, LENGTH = {total_length} \n"
             "}\n\n"
             f"SECTIONS {{\n"
             f"  . = ORIGIN(RAM);\n"
-            f"  {self.name} : ALIGN({page_size}) {{\n"
+             f"  {self.name} : ALIGN({page_size}) {{\n"
             f"{joined}\n"
             f"  }} > RAM\n"
             f"}}"
-        )
+    )
