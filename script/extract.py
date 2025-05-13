@@ -3,8 +3,9 @@ from subprocess import run
 
 def extract_symbol_size(obj, *, section=""):
     '''
-    obj: Path-like object pointing to the combined object file
+    obj: Path-like object pointing to ELF binary
     section: Sequence of characters holding section letter to include
+    
     returns [symbol name, section letter, symbol size, start address]
     '''
     def parse(line):
@@ -12,11 +13,11 @@ def extract_symbol_size(obj, *, section=""):
         if len(parts) == 2:
             return [parts[1], parts[0], 0, 0]
         if len(parts) == 3:
-            return [parts[2], parts[1], 0, int(parts[0])]
+            return [parts[2], parts[1], 0, int(parts[0], 16)]
 
-        return [parts[3], parts[2], int(parts[1]), int(parts[0])]
+        return [parts[3], parts[2], int(parts[1], 16), int(parts[0], 16)]
 
-    output = run(["nm", "--print-size", "--radix=d", obj], text=True, capture_output=True)
+    output = run(["nm", "--print-size", obj], text=True, capture_output=True)
 
     if output.returncode != 0:
         raise ValueError(output.stderr)
