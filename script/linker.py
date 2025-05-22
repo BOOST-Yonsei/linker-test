@@ -15,6 +15,7 @@ class LinkPage():
 
         entries = [f"*({s})" for s in self.sections]
         return f"    . = ALIGN({page_size});\n" + "    " + "\n    ".join(entries)
+
 class LinkSection():
     '''
     LinkSection {
