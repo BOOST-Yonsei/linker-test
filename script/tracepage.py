@@ -106,7 +106,7 @@ if __name__ == "__main__":
     try:
         print(f"Page range: 0x{pg_min:_X}, 0x{pg_max:_X}")
         print(f"Page count: {pg_max - pg_min + 1}")
-        print(f"Pages accessed: {max(page_seq) + 1}")
+        print(f"Pages accessed: {len(set(page_seq))}")
         print(f"Minimum required: {access_size:,} B -> {access_pg:} pages")
         print("Missing (inlined) functions:")
         print(json.dumps(missing))
